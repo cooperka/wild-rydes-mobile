@@ -7,6 +7,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "console": "awsmobile publish",
+    "push": "awsmobile push",
     "publish": "awsmobile publish",
     "eject": "react-scripts eject"
   },
