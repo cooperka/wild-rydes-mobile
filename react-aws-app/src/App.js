@@ -1,13 +1,21 @@
 import React, { Component } from 'react';
 import { withAuthenticator } from 'aws-amplify-react';
 import { API } from 'aws-amplify';
-import { Analytics, Auth } from 'aws-amplify';
+import { Analytics, Auth, graphqlOperation } from 'aws-amplify';
 
 import logo from './logo.svg';
 import './App.css';
 
-let apiName = 'PetAPI';
-let path = '/pets';
+const ListPets = `
+  query {
+    listPets {
+      items {
+        id
+        name
+      }
+    }
+  }
+`;
 
 class App extends Component {
 
@@ -17,12 +25,12 @@ class App extends Component {
   };
 
   async componentDidMount() {
-    const data = await API.get(apiName, path);
-    console.log('data: ', data);
-    this.setState({ pets: data.data });
+    const pets = await API.graphql(graphqlOperation(ListPets));
+    console.log('pets:', pets);
+    this.setState({ pets: pets.data.listPets.items });
 
     const user = await Auth.currentAuthenticatedUser();
-    console.log('user: ', user);
+    console.log('user:', user);
     this.setState({ username: user.username });
   }
 
@@ -41,7 +49,7 @@ class App extends Component {
         </header>
         {
           this.state.pets.map((pet, index) => (
-            <h2 key={index}>{pet}</h2>
+            <h2 key={index}>{pet.name}</h2>
           ))
         }
         <button onClick={this.addToCart}>Add To Cart</button>
