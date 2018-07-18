@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withAuthenticator } from 'aws-amplify-react';
 import { API } from 'aws-amplify';
-import { Analytics } from 'aws-amplify';
+import { Analytics, Auth } from 'aws-amplify';
 
 import logo from './logo.svg';
 import './App.css';
@@ -12,20 +12,24 @@ let path = '/pets';
 class App extends Component {
 
   state = {
-    pets: []
+    pets: [],
+    username: null,
   };
 
   async componentDidMount() {
     const data = await API.get(apiName, path);
     console.log('data: ', data);
-    this.setState({
-      pets: data.data,
-    });
+    this.setState({ pets: data.data });
+
+    const user = await Auth.currentAuthenticatedUser();
+    console.log('user: ', user);
+    this.setState({ username: user.username });
   }
 
   addToCart = () => {
-    console.log('Simulating adding item to cart.');
-    Analytics.record('Item added to cart!');
+    const { username } = this.state;
+    console.log('Adding item to cart. User:', username);
+    Analytics.record({ name: 'Item added to cart!', attributes: { username }});
   };
 
   render() {
