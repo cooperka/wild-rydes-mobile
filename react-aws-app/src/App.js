@@ -1,10 +1,20 @@
 import React, { Component } from 'react';
 import { withAuthenticator } from 'aws-amplify-react';
+import { API } from 'aws-amplify'
 
 import logo from './logo.svg';
 import './App.css';
 
+let apiName = 'PetAPI';
+let path = '/pets';
+
 class App extends Component {
+
+  async componentDidMount() {
+    const data = await API.get(apiName, path)
+    console.log('data: ', data)
+  }
+
   render() {
     return (
       <div className="App">
@@ -18,6 +28,7 @@ class App extends Component {
       </div>
     );
   }
+
 }
 
 export default withAuthenticator(App);
