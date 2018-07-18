@@ -10,9 +10,16 @@ let path = '/pets';
 
 class App extends Component {
 
+  state = {
+    pets: []
+  }
+
   async componentDidMount() {
     const data = await API.get(apiName, path)
     console.log('data: ', data)
+    this.setState({
+      pets: data.data
+    })
   }
 
   render() {
@@ -22,9 +29,11 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to React</h1>
         </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        {
+          this.state.pets.map((pet, index) => (
+            <h2 key={index}>{pet}</h2>
+          ))
+        }
       </div>
     );
   }
